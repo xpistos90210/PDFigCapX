@@ -42,7 +42,7 @@ if __name__ == "__main__":
     customize_dpi = 300  # Example DPI value for high quality
 
     # Path to pdftohtml
-    pdftohtml_path = "/usr/local/bin/pdftohtml"  # Update this path if necessary
+    pdftohtml_path = "/usr/local/bin/pdftohtml"  # Ensure this is the correct path
 
     # Read each file in the input path
     for pdf in os.listdir(input_path):
