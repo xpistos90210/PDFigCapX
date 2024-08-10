@@ -25,7 +25,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from xpdf_process import figures_captions_list
 import subprocess
-import os
 import time
 
 if __name__ == "__main__":
@@ -46,18 +45,25 @@ if __name__ == "__main__":
     for pdf in os.listdir(input_path):
         if pdf.endswith('.pdf') and (not pdf.startswith('._')):
             data = {}
-            print(input_path + '/' + pdf)
-            images = renderer.render_pdf(input_path + '/' + pdf, customize_dpi)
+            pdf_path = os.path.join(input_path, pdf)
+            print(pdf_path)
+            try:
+                images = renderer.render_pdf(pdf_path, customize_dpi)
+            except Exception as e:
+                print(f"\nError rendering {pdf}: {e}\n")
+                f_log.write(f"Error rendering {pdf}: {e}\n")
+                continue
+
             data[pdf] = {}
             data[pdf]['figures'] = []
             data[pdf]['pages_annotated'] = []
             pdf_flag = 0
             try:
                 if not os.path.isdir(xpdf_path + pdf[:-4]):
-                    std_out = subprocess.check_output(["/usa/pengyuan/Documents/RESEARCH/PDFigCapX/xpdf-tools-linux-4.00/bin64/pdftohtml", input_path + '/' + pdf, xpdf_path + pdf[:-4] + '/'])
-            except:
-                print("\nWrong " + pdf + "\n")
-                f_log.write(pdf + '\n')
+                    std_out = subprocess.check_output(["/usa/pengyuan/Documents/RESEARCH/PDFigCapX/xpdf-tools-linux-4.00/bin64/pdftohtml", pdf_path, xpdf_path + pdf[:-4] + '/'])
+            except Exception as e:
+                print(f"\nError processing {pdf} with pdftohtml: {e}\n")
+                f_log.write(f"Error processing {pdf} with pdftohtml: {e}\n")
                 pdf_flag = 1
 
             if pdf_flag == 0:
@@ -67,17 +73,18 @@ if __name__ == "__main__":
                     try:
                         figures, info = figures_captions_list(input_path, pdf, xpdf_path)
                         flag = 1
-                    except:
-                        wrong_count = wrong_count + 1
+                    except Exception as e:
+                        wrong_count += 1
                         time.sleep(5)
-                        print(pdf)
-                        info['fig_no_est'] = 0
+                        print(f"Error processing {pdf}: {e}")
+                        f_log.write(f"Error processing {pdf}: {e}\n")
+                        info = {'fig_no_est': 0}
                         figures = []
                         print("------\nChrome Error\n----------\n")
-        
+
                 data[pdf]['fig_no'] = info['fig_no_est']
 
-                output_file_path = output_path + '/' + pdf[:-4]
+                output_file_path = os.path.join(output_path, pdf[:-4])
                 if not os.path.isdir(output_file_path):
                     os.mkdir(output_file_path)
 
@@ -89,7 +96,7 @@ if __name__ == "__main__":
                     bboxes = figures[figure]
                     order_no = 0
                     for bbox in bboxes:
-                        order_no = order_no + 1
+                        order_no += 1
                         png_ratio = float(rendered_size[1]) / info['page_height']
                         print(png_ratio)
 
@@ -121,7 +128,7 @@ if __name__ == "__main__":
                         fig_extracted.save(output_file_path + '/' + str(page_no) + '_' + str(order_no) + '.jpg')
 
                 pprint(data)
-                json_file = output_file_path + '/' + pdf[:-4] + '.json'
+                json_file = os.path.join(output_file_path, pdf[:-4] + '.json')
                 with open(json_file, 'w') as outfile:
                     json.dump(data, outfile)
     f_log.close()
