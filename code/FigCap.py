@@ -70,7 +70,7 @@ if __name__ == "__main__":
                         print(pdf)
                         info['fig_no_est']=0
                         figures = []
-                        print "------\nChrome Error\n----------\n"
+                        print("------\nChrome Error\n----------\n")
         
                 data[pdf]['fig_no'] = info['fig_no_est']
 
