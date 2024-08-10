@@ -31,11 +31,12 @@ import time
 
 if __name__ == "__main__":
 
-    input_path = '/eecis/shatkay/homes/pengyuan/Documents/RESEARCH/PDFigCapX/code/sample_data_for_Juan'
-    output_path = '/eecis/shatkay/homes/pengyuan/Documents/RESEARCH/PDFigCapX/code/sample_data_for_Juan'
-    xpdf_path = output_path +'/xpdf/'  
+    input_path = '/Users/duncanarbour/Library/CloudStorage/OneDrive-SyneosHealth/PDFigCapInput'
+    output_path = '/Users/duncanarbour/Library/CloudStorage/OneDrive-SyneosHealth/PDFigCapInput/Output'
+    xpdf_path = output_path + '/xpdf/'
     log_file = output_path + '/log.text'
-    f_log = open(log_file, 'w') 
+    f_log = open(log_file, 'w')
+
     if not os.path.isdir(xpdf_path):
         os.mkdir(xpdf_path)
 # Read each files in the input path
