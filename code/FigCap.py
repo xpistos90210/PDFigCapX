@@ -67,7 +67,7 @@ if __name__ == "__main__":
                     except:
                         wrong_count = wrong_count +1
                         time.sleep(5)
-                        print pdf
+                        print(pdf)
                         info['fig_no_est']=0
                         figures = []
                         print "------\nChrome Error\n----------\n"
