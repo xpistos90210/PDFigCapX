@@ -1,22 +1,3 @@
-"""
-main code page
-structure (xpdf_process):
-1. Read pdfs from input folder
-2. Figure and caption pair detection
-    2.1. graphical content detection
-    2.2 page segmentation
-    2.3 figure detetion
-    2.4 caption association
-
-3. Mess up pdf processing
-
-Writen by Pengyuan Li
-
-Start from 19/10/2017
-1.0 version 28/02/2018
-
-"""
-
 import os
 import json
 from pprint import pprint
@@ -27,12 +8,15 @@ from xpdf_process import figures_captions_list
 import subprocess
 import time
 
-if __name__ == "__main__":
+def run_pdf2htmlEX(input_file, output_dir):
+    script_path = './run_pdf2htmlEX.sh'
+    subprocess.check_call([script_path, input_file, output_dir])
 
+if __name__ == "__main__":
     input_path = '/Users/duncanarbour/Library/CloudStorage/OneDrive-SyneosHealth/PDFigCapInput'
     output_path = '/Users/duncanarbour/Library/CloudStorage/OneDrive-SyneosHealth/PDFigCapInput/Output'
-    xpdf_path = output_path + '/xpdf/'
-    log_file = output_path + '/log.text'
+    xpdf_path = os.path.join(output_path, 'xpdf')
+    log_file = os.path.join(output_path, 'log.text')
     f_log = open(log_file, 'w')
 
     if not os.path.isdir(xpdf_path):
@@ -40,9 +24,6 @@ if __name__ == "__main__":
 
     # Choose a DPI value for rendering
     customize_dpi = 300  # Example DPI value for high quality
-
-    # Path to pdftohtml
-    pdftohtml_path = "/usr/local/bin/pdftohtml"  # Ensure this is the correct path
 
     # Read each file in the input path
     for pdf in os.listdir(input_path):
@@ -61,12 +42,14 @@ if __name__ == "__main__":
             data[pdf]['figures'] = []
             data[pdf]['pages_annotated'] = []
             pdf_flag = 0
+            pdf_output_path = os.path.join(xpdf_path, pdf[:-4])
             try:
-                if not os.path.isdir(xpdf_path + pdf[:-4]):
-                    std_out = subprocess.check_output([pdftohtml_path, pdf_path, xpdf_path + pdf[:-4] + '/'])
+                if not os.path.isdir(pdf_output_path):
+                    os.mkdir(pdf_output_path)
+                run_pdf2htmlEX(pdf_path, pdf_output_path)
             except Exception as e:
-                print(f"\nError processing {pdf} with pdftohtml: {e}\n")
-                f_log.write(f"Error processing {pdf} with pdftohtml: {e}\n")
+                print(f"\nError processing {pdf} with pdf2htmlEX: {e}\n")
+                f_log.write(f"Error processing {pdf} with pdf2htmlEX: {e}\n")
                 pdf_flag = 1
 
             if pdf_flag == 0:
@@ -135,5 +118,6 @@ if __name__ == "__main__":
                 with open(json_file, 'w') as outfile:
                     json.dump(data, outfile)
     f_log.close()
+
 
 
