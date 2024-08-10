@@ -42,7 +42,7 @@ if __name__ == "__main__":
     for pdf in os.listdir(input_path):
         if pdf.endswith('.pdf') and (not pdf.startswith('._')):
             data = {}
-            print input_path+pdf
+            print(input_path + pdf)
             images = renderer.render_pdf(input_path + '/' + pdf)
             data[pdf] = {}
             data[pdf]['figures'] = []
