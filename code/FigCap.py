@@ -41,6 +41,9 @@ if __name__ == "__main__":
     # Choose a DPI value for rendering
     customize_dpi = 300  # Example DPI value for high quality
 
+    # Path to pdftohtml
+    pdftohtml_path = "/usr/local/bin/pdftohtml"  # Update this path if necessary
+
     # Read each file in the input path
     for pdf in os.listdir(input_path):
         if pdf.endswith('.pdf') and (not pdf.startswith('._')):
@@ -60,7 +63,7 @@ if __name__ == "__main__":
             pdf_flag = 0
             try:
                 if not os.path.isdir(xpdf_path + pdf[:-4]):
-                    std_out = subprocess.check_output(["/usa/pengyuan/Documents/RESEARCH/PDFigCapX/xpdf-tools-linux-4.00/bin64/pdftohtml", pdf_path, xpdf_path + pdf[:-4] + '/'])
+                    std_out = subprocess.check_output([pdftohtml_path, pdf_path, xpdf_path + pdf[:-4] + '/'])
             except Exception as e:
                 print(f"\nError processing {pdf} with pdftohtml: {e}\n")
                 f_log.write(f"Error processing {pdf} with pdftohtml: {e}\n")
@@ -132,4 +135,5 @@ if __name__ == "__main__":
                 with open(json_file, 'w') as outfile:
                     json.dump(data, outfile)
     f_log.close()
+
 
