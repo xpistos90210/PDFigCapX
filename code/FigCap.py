@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 if not os.path.isdir(xpdf_path+pdf[:-4]):
                     std_out = subprocess.check_output(["/usa/pengyuan/Documents/RESEARCH/PDFigCapX/xpdf-tools-linux-4.00/bin64/pdftohtml", input_path+'/'+pdf, xpdf_path+pdf[:-4]+'/'])
             except:
-                print "\nWrong "+pdf+"\n"
+                print("\nWrong " + pdf + "\n")
                 f_log.write(pdf+'\n')
                 pdf_flag = 1
 
