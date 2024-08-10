@@ -1,27 +1,18 @@
 import shutil
-import os, sys, re
+import os
+import re
 from PIL import Image
 import numpy as np
 import tempfile
 
-#output_dpi = str(72)
-
-
 def render_pdf(filename, customize_dpi):
     """
-        This function renders the document unsing imagemagick and returns a list of images, one for each page.
-        The images are PIL Image type.
+    This function renders the document using ImageMagick and returns a list of images, one for each page.
+    The images are PIL Image type.
     """
     output_dpi = str(customize_dpi)
     sep = os.path.sep
-    # splitted = filename.split(sep)
-    # t = splitted[len(splitted) - 1]
-    # fname = t.split('.')[0]
-    # currDir = os.getcwd()
-    # outputDir = currDir + sep + fname + sep
-    # os.mkdir(outputDir, 0755)
     outputDir = tempfile.mkdtemp()
-    
 
     rasterScale = 3  # increase this if you want higher resolution images 
     rasterDensity = str(rasterScale * 100) 
@@ -35,8 +26,6 @@ def render_pdf(filename, customize_dpi):
             filename + ' ' + os.path.join(outputDir, 'image.png'))
     else:
         os.system(
-            # 'convert -density ' + rasterDensity + ' -resample ' + output_dpi + ' -set colorspace RGB ' + filename + ' ' + outputDir + 'image.png')
-            #'convert -density ' + output_dpi + ' -resample ' + output_dpi + ' -set colorspace RGB ' + filename + ' ' + outputDir + 'image.png')
             'gs -q -sDEVICE=png16m -o ' + os.path.join(outputDir, 'file-%02d.png') + ' -r' + output_dpi + ' ' + filename)
 
     files = [f for f in os.listdir(outputDir) if os.path.isfile(os.path.join(outputDir, f)) and not f.startswith('.')]
@@ -50,11 +39,10 @@ def render_pdf(filename, customize_dpi):
     shutil.rmtree(outputDir)
     return images
 
-
-def natural_sort(l): # this is taken from stack overflow.
+def natural_sort(l):
     """
-        This function will sort strings with numeric values in natural ascending order, 
-        such that it does not go 1,11,2 etc.
+    This function will sort strings with numeric values in natural ascending order, 
+    such that it does not go 1,11,2 etc.
     """
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
